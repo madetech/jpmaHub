@@ -1,12 +1,26 @@
+require_relative '../api'
 require 'builder/tgif'
+require 'date'
 require 'database_admin/postgres'
 require_relative '../db/migrator'
 require 'domain/tgif'
 require 'gateway/sequel_tgif_gateway'
+require 'sinatra'
+require 'rack/test'
 require 'usecase/fetch_weekly_tgif'
 require 'usecase/submit_tgif'
 
+ENV['APP_ENV'] = 'test'
+
+module RSpecMixin
+  def app
+    described_class
+  end
+end
+
 RSpec.configure do |config|
+  config.include RSpecMixin
+  config.include Rack::Test::Methods
   config.filter_run_when_matching :focus
   config.run_all_when_everything_filtered
 
