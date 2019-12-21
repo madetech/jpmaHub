@@ -21,8 +21,14 @@ class TgifService < Sinatra::Base
   end
 
   post '/delete-tgifs' do
-    @tgif_gateway.delete_all
-    "TGIF deleted"
+    response = params['user_id']
+
+    if response == ENV['AUTH_DELETE_ALL']
+      @tgif_gateway.delete_all
+      "TGIF deleted"
+    else
+      "You are not authorised to delete tgifs"
+    end
   end
 
   post '/weekly-tgifs' do

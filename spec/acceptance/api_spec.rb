@@ -3,10 +3,28 @@ describe TgifService, :type => :feature do
   describe 'the server having started' do
     
     context 'responses from /delete-tgifs' do
-      let(:response) { post '/delete-tgifs' }
+      context 'given authorised user id' do
+        let(:response) { post '/delete-tgifs', :user_id => ENV['AUTH_DELETE_ALL'] }
 
-      it 'returns status 200' do
-        expect(response.status).to eq(200)
+        it 'returns status 200' do
+          expect(response.status).to eq(200)
+        end
+
+        it 'deletes tgifs successfully' do
+          expect(response.body).to include("TGIF deleted")
+        end
+      end
+
+      context 'given unauthorised user id' do
+        let(:response) { post '/delete-tgifs', :user_id => "nil"}
+
+        it 'returns status 200' do
+          expect(response.status).to eq(200)
+        end
+
+        it 'cannot delete tgif'  do
+          expect(response.body).to include("You are not authorised to delete tgifs")
+        end
       end
     end
 
