@@ -1,6 +1,7 @@
 require 'builder/tgif'
 require 'domain/tgif'
 require 'usecase/fetch_weekly_tgif'
+require 'usecase/submit_tgif'
 
 RSpec.configure do |config|
   config.filter_run_when_matching :focus
