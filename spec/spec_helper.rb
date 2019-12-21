@@ -1,3 +1,7 @@
+require 'builder/tgif'
+require 'domain/tgif'
+require 'usecase/fetch_weekly_tgif'
+
 RSpec.configure do |config|
   config.filter_run_when_matching :focus
   config.run_all_when_everything_filtered
@@ -13,6 +17,3 @@ RSpec.configure do |config|
   config.shared_context_metadata_behavior = :apply_to_host_groups
 
 end
-
-
-
