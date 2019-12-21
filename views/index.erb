@@ -1,0 +1,11 @@
+*TGIF*
+------------------------------------------
+<% if @tgifs.nil? %>
+  No Tgifs yet
+<% else %>
+  <% @tgifs.each do |tgif| %>
+*<%= tgif[:team_name] %>*
+<%= tgif[:message] %>
+
+  <% end %>
+<% end %>
