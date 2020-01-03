@@ -20,7 +20,7 @@ class TgifService < Sinatra::Base
     @database.disconnect
   end
 
-  post '/delete-tgifs' do
+  post '/delete-all' do
     response = params['user_id']
 
     if response == ENV['AUTH_DELETE_ALL']
@@ -29,6 +29,12 @@ class TgifService < Sinatra::Base
     else
       "You are not authorised to delete tgifs"
     end
+  end
+
+  post '/delete-tgif' do
+    response = params['text']
+    @tgif_gateway.delete_tgif(response)
+    "TGIF deleted"
   end
 
   post '/weekly-tgifs' do
@@ -50,5 +56,5 @@ class TgifService < Sinatra::Base
     else 
       "TGIF can't be submitted and has execeeded 280 characters limit"
     end 
-  end 
+  end
 end 
