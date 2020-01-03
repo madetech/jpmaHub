@@ -26,9 +26,9 @@ describe SequelTgifGateway do
   end 
 
   it 'can get a weekly list of tgifs' do
-    populate_tgif_details('team_name_one' , 'message_one', DateTime.now-8)
-    populate_tgif_details('team_name_two' , 'message_two', DateTime.now+1)
-    populate_tgif_details('team_current_week' , 'message', DateTime.now+7)
+    populate_weekly_tgif('team_name_one' , 'message_one', DateTime.now-8)
+    populate_weekly_tgif('team_name_two' , 'message_two', DateTime.now+1)
+    populate_weekly_tgif('team_current_week' , 'message', DateTime.now+7)
    
     expect(sequel_tgif_gateway.fetch_tgif.count).to eq(1)
 
@@ -39,25 +39,41 @@ describe SequelTgifGateway do
     end
   end 
 
-  it 'can delete all tgif details' do
-    tgif_builder = Builder::Tgif.new
-    tgif_builder.from(team_name: 'TeamOne', message: 'team-one-message')
+  it 'can delete all tgifs' do
+    populate_tgif('team_name_one' , 'message_one')
+    populate_tgif('team_name_two' , 'message_two')
+    populate_tgif('team_current_week' , 'message')
 
-    tgifs = tgif_builder.build
-    sequel_tgif_gateway.save(tgifs)
-
-    expect(sequel_tgif_gateway.all.count).to eq(1);
+    expect(sequel_tgif_gateway.all.count).to eq(3);
 
     sequel_tgif_gateway.delete_all
 
     expect(sequel_tgif_gateway.all.count).to eq(0);
   end 
+
+  it 'can delete tgif by team' do
+    populate_tgif('team_name_two' , 'message_two')
+    populate_tgif('team' , 'message_one')
+
+    expect(sequel_tgif_gateway.all.count).to eq(2);
+
+    sequel_tgif_gateway.delete_tgif('team')
+
+    expect(sequel_tgif_gateway.all.count).to eq(1);
+  end 
 end
 
-def populate_tgif_details(team_name , message, time)
+def populate_weekly_tgif(team_name , message, time=nil)
   tgif_builder = Builder::Tgif.new 
   tgif_builder.from(team_name: team_name, message: message)
   tgifs = tgif_builder.build
   allow(DateTime).to receive(:now).and_return(time)
+  sequel_tgif_gateway.save(tgifs)
+end 
+
+def populate_tgif(team_name , message)
+  tgif_builder = Builder::Tgif.new 
+  tgif_builder.from(team_name: team_name, message: message)
+  tgifs = tgif_builder.build
   sequel_tgif_gateway.save(tgifs)
 end 

@@ -52,4 +52,8 @@ class SequelTgifGateway
   def delete_all
     @database[:tgif].delete
   end
+
+  def delete_tgif(team_name)
+    @database[:tgif].where(team_name: team_name).delete
+  end 
 end 
