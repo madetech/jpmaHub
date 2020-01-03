@@ -24,8 +24,8 @@ RSpec.configure do |config|
   config.filter_run_when_matching :focus
   config.run_all_when_everything_filtered
 
-  database = DatabaseAdministrator::Postgres.new.fresh_database
-  config.before(:all) { @database = database }
+  database = Sequel.connect(ENV['DATABASE_URL'])
+  config.before(:each) { @database = database[:tgif].delete }
 
   config.expect_with :rspec do |expectations|
     expectations.include_chain_clauses_in_custom_matcher_descriptions = true
