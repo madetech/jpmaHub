@@ -32,6 +32,7 @@ describe TgifService, :type => :feature do
         let(:response) do 
           post '/submit-tgif', :text => 'team | message one'
           post '/delete-tgif', :text => 'team' 
+          post '/weekly-tgifs'
         end 
 
         it 'returns status 200' do
@@ -39,7 +40,7 @@ describe TgifService, :type => :feature do
         end
 
         it 'deletes tgif successfully' do
-          expect(response.body).to include('TGIF deleted')
+          expect(response.body).to include('No Tgifs yet')
         end
     end
 

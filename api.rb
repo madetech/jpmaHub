@@ -44,8 +44,9 @@ class TgifService < Sinatra::Base
 
   post '/submit-tgif' do
     response =  params['text']
-    team_name = response.split('|')[0]
-    message = response[team_name.size+1..-1].strip
+    splitted_response = response.split('|')[0]
+    team_name = splitted_response.strip
+    message = response[splitted_response.size+1..-1].strip
 
     if message.size() <= 280
       @tgif_row = { team_name: team_name, message: message }
