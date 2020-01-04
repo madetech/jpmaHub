@@ -8,20 +8,20 @@ class SequelTgifGateway
   end
 
   def fetch_tgif
-    tgifs = @database[:tgif].where { |d| d.time_stamp > DateTime.now - 6 }
+    tgifs = @database[:tgif].where { time_stamp > DateTime.now - 6 }
 
     return [] if tgifs.empty?
 
     tgifs.map do |tgif_details|
       tgif_builder = Builder::Tgif.new
       tgif_builder.from(
-        id: tgif_details[:id],
-        team_name: tgif_details[:team_name],
-        message: tgif_details[:message]
+          id: tgif_details[:id],
+          team_name: tgif_details[:team_name],
+          message: tgif_details[:message]
       )
       tgif_builder.build
     end
-  end 
+  end
 
   def all
     tgifs = @database[:tgif].all
@@ -31,9 +31,9 @@ class SequelTgifGateway
     tgifs.map do |tgif_details|
       tgif_builder = Builder::Tgif.new
       tgif_builder.from(
-        id: tgif_details[:id],
-        team_name: tgif_details[:team_name],
-        message: tgif_details[:message]
+          id: tgif_details[:id],
+          team_name: tgif_details[:team_name],
+          message: tgif_details[:message]
       )
       tgif_builder.build
     end
@@ -41,9 +41,9 @@ class SequelTgifGateway
 
   def save(tgif)
     serialised_tgif = {
-      team_name: tgif.team_name,
-      message: tgif.message,
-      time_stamp: DateTime.now
+        team_name: tgif.team_name,
+        message: tgif.message,
+        time_stamp: DateTime.now
     }
 
     @database[:tgif].insert(serialised_tgif)
@@ -55,5 +55,5 @@ class SequelTgifGateway
 
   def delete_tgif(team_name)
     @database[:tgif].where(Sequel.ilike(:team_name, /^#{team_name}$/)).delete
-  end 
+  end
 end 

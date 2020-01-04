@@ -10,9 +10,9 @@ class FetchWeeklyTgif
 
     tgifs.map! do |tgif|
       {
-        id: tgif.id,
-        team_name: tgif.team_name,
-        message: tgif.message,
+          id: tgif.id,
+          team_name: tgif.team_name,
+          message: tgif.message,
       }
     end
     tgifs

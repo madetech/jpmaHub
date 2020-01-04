@@ -13,9 +13,9 @@ module Builder
 
     def from(id: nil, team_name:, message:)
       @tgif_details = {
-        id: id,
-        team_name: team_name,
-        message: message,
+          id: id,
+          team_name: team_name,
+          message: message,
       }
     end
   end
