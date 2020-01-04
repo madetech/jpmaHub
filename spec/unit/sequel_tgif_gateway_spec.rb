@@ -57,7 +57,7 @@ describe SequelTgifGateway do
 
     expect(sequel_tgif_gateway.all.count).to eq(2);
 
-    sequel_tgif_gateway.delete_tgif('team')
+    sequel_tgif_gateway.delete_tgif('Team')
 
     expect(sequel_tgif_gateway.all.count).to eq(1);
   end 

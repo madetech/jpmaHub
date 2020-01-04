@@ -54,6 +54,6 @@ class SequelTgifGateway
   end
 
   def delete_tgif(team_name)
-    @database[:tgif].where(team_name: team_name).delete
+    @database[:tgif].where(Sequel.ilike(:team_name, /^#{team_name}$/)).delete
   end 
 end 

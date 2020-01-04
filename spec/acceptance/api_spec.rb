@@ -31,7 +31,7 @@ describe TgifService, :type => :feature do
     context 'responses from /delete-tgif' do
         let(:response) do 
           post '/submit-tgif', :text => 'team | message one'
-          post '/delete-tgif', :text => 'team' 
+          post '/delete-tgif', :text => 'Team' 
           post '/weekly-tgifs'
         end 
 
