@@ -14,65 +14,115 @@ describe 'TGIF Service' do
     FetchWeeklyTgif.new(tgif_gateway: tgif_gateway)
   end
 
-  it 'returns [] when no tgifs pass to gateway' do
-    submit_tgif.execute(tgif: [])
-    weekly_list_tgif.execute
-
-    expect(tgif_gateway.all).to eq([])
+  let(:delete_all_tgif) do
+    DeleteAllTgif.new(tgif_gateway: tgif_gateway)
   end
 
-  it 'use tgif gateway to submit tgif' do
-    tgif_submitted = {team_name: 'team_one', message: 'team_one_message'}
-    submit_tgif.execute(tgif: tgif_submitted)
-
-    tgif = tgif_gateway.all.first
-
-    expect(tgif.team_name).to eq('team_one')
-    expect(tgif.message).to eq('team_one_message')
+  let(:delete_team_tgif) do
+    DeleteTeamTgif.new(tgif_gateway: tgif_gateway)
   end
 
-  it 'uses tgif gateway to submit multiple tgif' do
-    tgif_submitted_one = {team_name: 'team_one', message: 'team_one_message'}
-    tgif_submitted_two = {team_name: 'team_two', message: 'team_two_message'}
+  context 'submit tgif' do
+    it 'returns [] when no tgifs pass to gateway' do
+      submit_tgif.execute(tgif: [])
+      weekly_list_tgif.execute
 
-    submit_tgif.execute(tgif: tgif_submitted_one)
-    submit_tgif.execute(tgif: tgif_submitted_two)
+      expect(tgif_gateway.all).to eq([])
+    end
 
-    tgif = tgif_gateway.all
+    it 'use tgif gateway to submit tgif' do
+      tgif_submitted = {team_name: 'team_one', message: 'team_one_message'}
+      submit_tgif.execute(tgif: tgif_submitted)
 
-    expect(tgif[0].team_name).to eq('team_one')
-    expect(tgif[0].message).to eq('team_one_message')
+      tgif = tgif_gateway.all.first
 
-    expect(tgif[1].team_name).to eq('team_two')
-    expect(tgif[1].message).to eq('team_two_message')
+      expect(tgif.team_name).to eq('team_one')
+      expect(tgif.message).to eq('team_one_message')
+    end
+
+    it 'uses tgif gateway to submit multiple tgif' do
+      tgif_submitted_one = {team_name: 'team_one', message: 'team_one_message'}
+      tgif_submitted_two = {team_name: 'team_two', message: 'team_two_message'}
+
+      submit_tgif.execute(tgif: tgif_submitted_one)
+      submit_tgif.execute(tgif: tgif_submitted_two)
+
+      tgif = tgif_gateway.all
+
+      expect(tgif[0].team_name).to eq('team_one')
+      expect(tgif[0].message).to eq('team_one_message')
+
+      expect(tgif[1].team_name).to eq('team_two')
+      expect(tgif[1].message).to eq('team_two_message')
+    end
+
   end
 
-  it 'uses tgif gateway to fetch tgif by weekly' do
-    team1_tgif_details = {team_name: 'teamOne_last_week', message: 'team_one_message'}
-    team2_tgif_details = {team_name: 'teamTwo_current_week', message: 'team_two_message'}
-    team3_tgif_details = {team_name: 'teamThree_current_week', message: 'team_three_message'}
+  context 'fetch tgif' do
+    it 'uses tgif gateway to fetch tgif by weekly' do
+      team1_tgif_details = {team_name: 'teamOne_last_week', message: 'team_one_message'}
+      team2_tgif_details = {team_name: 'teamTwo_current_week', message: 'team_two_message'}
+      team3_tgif_details = {team_name: 'teamThree_current_week', message: 'team_three_message'}
 
-    # last week tgifs
-    allow(DateTime).to receive(:now).and_return(DateTime.now - 7)
-    submit_tgif.execute(tgif: team1_tgif_details)
+      # last week tgifs
+      allow(DateTime).to receive(:now).and_return(DateTime.now - 7)
+      submit_tgif.execute(tgif: team1_tgif_details)
 
-    # current week tgifs
-    allow(DateTime).to receive(:now).and_return(DateTime.now + 6)
-    submit_tgif.execute(tgif: team2_tgif_details)
-    submit_tgif.execute(tgif: team3_tgif_details)
+      # current week tgifs
+      allow(DateTime).to receive(:now).and_return(DateTime.now + 6)
+      submit_tgif.execute(tgif: team2_tgif_details)
+      submit_tgif.execute(tgif: team3_tgif_details)
 
-    weekly_list_tgif.execute
+      weekly_list_tgif.execute
 
-    expect(tgif_gateway.fetch_tgif.count).to eq(2)
+      expect(tgif_gateway.fetch_tgif.count).to eq(2)
 
-    tgif_gateway.fetch_tgif.tap do |tgif|
-      expect(tgif[0].id).not_to be nil
-      expect(tgif[0].team_name).to eq('teamTwo_current_week')
-      expect(tgif[0].message).to eq('team_two_message')
+      tgif_gateway.fetch_tgif.tap do |tgif|
+        expect(tgif[0].id).not_to be nil
+        expect(tgif[0].team_name).to eq('teamTwo_current_week')
+        expect(tgif[0].message).to eq('team_two_message')
 
-      expect(tgif[1].id).not_to be nil
-      expect(tgif[1].team_name).to eq('teamThree_current_week')
-      expect(tgif[1].message).to eq('team_three_message')
+        expect(tgif[1].id).not_to be nil
+        expect(tgif[1].team_name).to eq('teamThree_current_week')
+        expect(tgif[1].message).to eq('team_three_message')
+      end
+    end
+  end
+
+  context 'delete all tgif' do
+    it 'uses tgif gateway to delete all tgif' do
+      team1_tgif_details = {team_name: 'teamOne', message: 'team_one_message'}
+      team2_tgif_details = {team_name: 'teamTwo', message: 'team_two_message'}
+
+      submit_tgif.execute(tgif: team1_tgif_details)
+      submit_tgif.execute(tgif: team2_tgif_details)
+
+      weekly_list_tgif.execute
+
+      expect(tgif_gateway.fetch_tgif.count).to eq(2)
+
+      delete_all_tgif.execute
+
+      expect(tgif_gateway.fetch_tgif.count).to eq(0)
+    end
+  end
+
+  context 'delete team tgif' do
+
+    it 'uses tgif gateway to delete tgif by team' do
+      team1_tgif_details = {team_name: 'teamOne', message: 'team_one_message'}
+      team2_tgif_details = {team_name: 'teamTwo', message: 'team_two_message'}
+
+      submit_tgif.execute(tgif: team1_tgif_details)
+      submit_tgif.execute(tgif: team2_tgif_details)
+
+      weekly_list_tgif.execute
+
+      expect(tgif_gateway.fetch_tgif.count).to eq(2)
+
+      delete_team_tgif.execute('teamTwo')
+
+      expect(tgif_gateway.fetch_tgif.count).to eq(1)
     end
   end
 end
