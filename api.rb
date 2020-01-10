@@ -1,3 +1,6 @@
+require 'json'
+require 'rdiscount'
+require 'sinatra'
 require './db/migrator'
 require './lib/builder/tgif'
 require './lib/database_admin/postgres'
@@ -5,15 +8,14 @@ require './lib/domain/tgif'
 require './lib/gateway/sequel_tgif_gateway.rb'
 require './lib/usecase/fetch_weekly_tgif'
 require './lib/usecase/submit_tgif'
-require 'json'
-require 'rdiscount'
-require 'sinatra'
+require './lib/usecase/delete_all_tgif'
 
 class TgifService < Sinatra::Base
   before do
     @database = DatabaseAdministrator::Postgres.new.existing_database
     @tgif_gateway = SequelTgifGateway.new(database: @database)
     @list_weekly_tgif = FetchWeeklyTgif.new(tgif_gateway: @tgif_gateway)
+    @delete_all_tgif = DeleteAllTgif.new(tgif_gateway: @tgif_gateway)
   end
 
   after do
@@ -24,8 +26,7 @@ class TgifService < Sinatra::Base
     response = params['user_id']
 
     if response == ENV['AUTH_DELETE_ALL']
-      @tgif_gateway.delete_all
-      "TGIF deleted"
+      delete_message
     else
       "You are not authorised to delete tgifs"
     end
@@ -58,4 +59,15 @@ class TgifService < Sinatra::Base
       "TGIF can't be submitted and has execeeded 280 characters limit"
     end
   end
-end 
+end
+
+def delete_message
+  delete_all_tgif = @delete_all_tgif.execute
+  delete_message = '*No TGIF to delete*'
+
+  if delete_all_tgif[:isDeleted]
+    delete_message = '*TGIFs deleted*'
+  end
+
+  delete_message
+end

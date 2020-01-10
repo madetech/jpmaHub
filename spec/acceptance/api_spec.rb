@@ -2,7 +2,7 @@ describe TgifService, :type => :feature do
   describe 'the server having started' do
 
     context 'responses from /delete-all' do
-      context 'given authorised user id' do
+      context 'given authorised user id with no tgif to delete' do
         let(:response) { post '/delete-all', :user_id => ENV['AUTH_DELETE_ALL'] }
 
         it 'returns status 200' do
@@ -10,7 +10,36 @@ describe TgifService, :type => :feature do
         end
 
         it 'deletes tgifs successfully' do
-          expect(response.body).to include('TGIF deleted')
+          expect(response.body).to include('No TGIF to delete')
+        end
+      end
+
+      context 'given authorised user id with tgifs to delete' do
+        context 'given delete all tgif' do
+          let(:response) do
+            post '/submit-tgif', :text => 'team | message one'
+            post '/delete-all', :user_id => ENV['AUTH_DELETE_ALL']
+          end
+
+          it 'returns status 200' do
+            expect(response.status).to eq(200)
+          end
+
+          it 'deletes tgifs successfully' do
+            expect(response.body).to include('TGIFs deleted')
+          end
+        end
+
+        context 'given list tgif' do
+          let(:response) do
+            post '/submit-tgif', :text => 'team | message one'
+            post '/delete-all', :user_id => ENV['AUTH_DELETE_ALL']
+            post '/weekly-tgifs'
+          end
+
+          it 'has deleted tgif successfully' do
+            expect(response.body).to include('No Tgifs yet')
+          end
         end
       end
 
