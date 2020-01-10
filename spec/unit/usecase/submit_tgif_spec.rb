@@ -1,6 +1,5 @@
 describe SubmitTgif do
   let(:tgif_gateway) { spy(all: []) }
-  let(:dummy_item) { Class.new }
   let(:use_case) { described_class.new(tgif_gateway: tgif_gateway) }
 
   it 'uses the tgif gateway to submit tgif details' do
