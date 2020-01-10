@@ -9,6 +9,7 @@ require './lib/gateway/sequel_tgif_gateway.rb'
 require './lib/usecase/fetch_weekly_tgif'
 require './lib/usecase/submit_tgif'
 require './lib/usecase/delete_all_tgif'
+require './lib/usecase/delete_team_tgif'
 
 class TgifService < Sinatra::Base
   before do
@@ -16,6 +17,7 @@ class TgifService < Sinatra::Base
     @tgif_gateway = SequelTgifGateway.new(database: @database)
     @list_weekly_tgif = FetchWeeklyTgif.new(tgif_gateway: @tgif_gateway)
     @delete_all_tgif = DeleteAllTgif.new(tgif_gateway: @tgif_gateway)
+    @delete_team_tgif = DeleteTeamTgif.new(tgif_gateway: @tgif_gateway)
   end
 
   after do
@@ -33,9 +35,15 @@ class TgifService < Sinatra::Base
   end
 
   post '/delete-tgif' do
-    response = params['text']
-    @tgif_gateway.delete_tgif(response)
-    "TGIF deleted"
+    response_text = params['text']
+    delete_team_tgif = @delete_team_tgif.execute(response_text)[:is_deleted]
+    delete_message = '*No TGIF to delete*'
+
+    if delete_team_tgif
+      delete_message = '*TGIF deleted*'
+    end
+
+    delete_message
   end
 
   post '/weekly-tgifs' do
@@ -62,10 +70,10 @@ class TgifService < Sinatra::Base
 end
 
 def delete_message
-  delete_all_tgif = @delete_all_tgif.execute
+  delete_all_tgif = @delete_all_tgif.execute[:is_deleted]
   delete_message = '*No TGIF to delete*'
 
-  if delete_all_tgif[:isDeleted]
+  if delete_all_tgif
     delete_message = '*TGIFs deleted*'
   end
 

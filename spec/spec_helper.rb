@@ -9,7 +9,8 @@ require 'sinatra'
 require 'rack/test'
 require 'usecase/fetch_weekly_tgif'
 require 'usecase/submit_tgif'
-
+require 'usecase/delete_all_tgif'
+require 'usecase/delete_team_tgif'
 ENV['APP_ENV'] = 'test'
 
 module RSpecMixin

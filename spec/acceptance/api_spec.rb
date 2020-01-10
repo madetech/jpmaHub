@@ -57,19 +57,36 @@ describe TgifService, :type => :feature do
     end
 
     context 'responses from /delete-tgif' do
-      let(:response) do
-        post '/submit-tgif', :text => 'team | message one'
-        post '/delete-tgif', :text => 'Team'
-        post '/weekly-tgifs'
+      context 'given tgif does not exist' do
+        let(:response) do
+          post '/delete-tgif', :text => 'Team'
+        end
+
+        it 'returns status 200' do
+          expect(response.status).to eq(200)
+        end
+
+        it 'returns no tgif to delete' do
+          expect(response.body).to include('No TGIF to delete')
+        end
       end
 
-      it 'returns status 200' do
-        expect(response.status).to eq(200)
+      context 'given tgif does exist' do
+        let(:response) do
+          post '/submit-tgif', :text => 'team | message one'
+          post '/delete-tgif', :text => 'Team'
+        end
+
+        it 'returns status 200' do
+          expect(response.status).to eq(200)
+        end
+
+        it 'deletes tgif successfully' do
+          expect(response.body).to include('TGIF deleted')
+        end
       end
 
-      it 'deletes tgif successfully' do
-        expect(response.body).to include('No Tgifs yet')
-      end
+
     end
 
     context 'responses from /weekly-tgifs' do
