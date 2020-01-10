@@ -4,11 +4,11 @@ class DeleteAllTgif
   end
 
   def execute
-    response = {isDeleted: false}
+    response = {is_deleted: false}
 
     unless @tgif_gateway.fetch_tgif.empty?
       @tgif_gateway.delete_all
-      response = {isDeleted: true}
+      response = {is_deleted: true}
     end
 
     response

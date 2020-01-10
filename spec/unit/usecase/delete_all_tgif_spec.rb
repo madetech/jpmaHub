@@ -17,12 +17,12 @@ describe DeleteAllTgif do
     response = use_case.execute
 
     expect(tgif_gateway).to have_received(:delete_all)
-    expect(response[:isDeleted]).to eq(true)
+    expect(response[:is_deleted]).to eq(true)
   end
 
   it 'returns false when tgifs empty' do
     use_case = described_class.new(tgif_gateway: double(fetch_tgif: []))
     response = use_case.execute
-    expect(response[:isDeleted]).to eq(false)
+    expect(response[:is_deleted]).to eq(false)
   end
 end 
