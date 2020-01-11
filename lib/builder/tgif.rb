@@ -7,7 +7,8 @@ module Builder
       tgif.id = tgif_details[:id]
       tgif.team_name = tgif_details[:team_name]
       tgif.message = tgif_details[:message]
-      tgif.time_stamp = tgif_details[:time_stamp]
+      tgif.created_at = tgif_details[:created_at]
+      tgif.slack_user_id = tgif_details[:slack_user_id]
       tgif
     end
 
