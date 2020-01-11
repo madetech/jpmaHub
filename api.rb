@@ -9,7 +9,7 @@ require './lib/usecase/submit_tgif'
 require './lib/usecase/delete_all_tgif'
 require './lib/usecase/delete_team_tgif'
 require 'sinatra/activerecord'
-require 'container'
+require './lib/container'
 
 class TgifService < Sinatra::Base
   def initialize
