@@ -6,9 +6,14 @@ git_source(:github) { |repo_name| "https://github.com/#{repo_name}" }
 
 gem 'dotenv'
 gem 'pg'
-gem 'rack-test'
 gem 'rerun'
 gem 'rdiscount'
-gem 'rspec'
-gem 'sequel'
+gem 'rake'
+gem "sinatra-activerecord"
 gem 'sinatra'
+
+group :test do
+  gem 'database_cleaner'
+  gem 'rack-test', '~> 0.8.3'
+  gem 'rspec', '~>3.0'
+end
