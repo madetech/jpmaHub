@@ -1,5 +1,5 @@
-describe SequelTgifGateway do
-  database = DatabaseAdministrator::Postgres.new.existing_database
+xdescribe SequelTgifGateway do
+
   let(:sequel_tgif_gateway) { described_class.new(database: database) }
 
   before do
