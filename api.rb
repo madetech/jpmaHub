@@ -9,14 +9,11 @@ require './lib/usecase/submit_tgif'
 require './lib/usecase/delete_all_tgif'
 require './lib/usecase/delete_team_tgif'
 require 'sinatra/activerecord'
+require 'container'
 
 class TgifService < Sinatra::Base
-
   def initialize
-    @tgif_gateway = Gateway::TgifsGateway.new
-    @list_weekly_tgif = FetchWeeklyTgif.new(tgif_gateway: @tgif_gateway)
-    @delete_all_tgif = DeleteAllTgif.new(tgif_gateway: @tgif_gateway)
-    @delete_team_tgif = DeleteTeamTgif.new(tgif_gateway: @tgif_gateway)
+    @container = Container.new
     super
   end
 
@@ -26,16 +23,17 @@ class TgifService < Sinatra::Base
     if response == ENV['AUTH_DELETE_ALL']
       delete_message
     else
-      "You are not authorised to delete tgifs"
+      "*You are not authorised to delete tgifs*"
     end
   end
 
   post '/delete-tgif' do
     response_text = params['text']
-    delete_team_tgif = @delete_team_tgif.execute(response_text)[:is_deleted]
+    delete_team_tgif = @container.get_object(:delete_team_tgif)
+    response = delete_team_tgif.execute(response_text)[:is_deleted]
     delete_message = '*No TGIF to delete*'
 
-    if delete_team_tgif
+    if response
       delete_message = '*TGIF deleted*'
     end
 
@@ -43,7 +41,7 @@ class TgifService < Sinatra::Base
   end
 
   post '/weekly-tgifs' do
-    @tgifs = @list_weekly_tgif.execute
+    @tgifs = @container.get_object(:fetch_weekly_tgif).execute
     erb :index
   end
 
@@ -55,21 +53,22 @@ class TgifService < Sinatra::Base
 
     if message.size() <= 280
       @tgif_row = {team_name: team_name, message: message}
-      submit_tgif = SubmitTgif.new(tgif_gateway: @tgif_gateway)
+      submit_tgif = @container.get_object(:submit_tgif)
       submit_tgif.execute(tgif: @tgif_row)
 
-      "TGIF has successfully submitted for #{team_name}"
+      "*TGIF has successfully submitted for #{team_name}*"
     else
-      "TGIF can't be submitted and has execeeded 280 characters limit"
+      "*TGIF can't be submitted and has execeeded 280 characters limit*"
     end
   end
 end
 
 def delete_message
-  delete_all_tgif = @delete_all_tgif.execute[:is_deleted]
+  delete_all_tgif = @container.get_object(:delete_all_tgif)
+  response = delete_all_tgif.execute[:is_deleted]
   delete_message = '*No TGIF to delete*'
 
-  if delete_all_tgif
+  if response
     delete_message = '*TGIFs deleted*'
   end
 
