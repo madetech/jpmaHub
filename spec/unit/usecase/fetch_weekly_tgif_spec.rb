@@ -6,7 +6,7 @@ describe FetchWeeklyTgif do
       @message = message
     end
 
-    attr_reader :id, :team_name, :message
+    attr_reader :id, :team_name, :message, :slack_user_id
   end
 
   it 'returns tgifs to view by weekly' do

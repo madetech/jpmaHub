@@ -1,10 +1,5 @@
 describe 'TGIF Service' do
-  database = DatabaseAdministrator::Postgres.new.existing_database
-  let(:tgif_gateway) { SequelTgifGateway.new(database: database) }
-
-  before do
-    tgif_gateway.delete_all
-  end
+  let(:tgif_gateway) { Gateway::TgifsGateway.new }
 
   let(:submit_tgif) do
     SubmitTgif.new(tgif_gateway: tgif_gateway)
@@ -23,18 +18,11 @@ describe 'TGIF Service' do
   end
 
   context 'submit tgif' do
-    it 'returns [] when no tgifs pass to gateway' do
-      submit_tgif.execute(tgif: [])
-      weekly_list_tgif.execute
-
-      expect(tgif_gateway.all).to eq([])
-    end
-
     it 'use tgif gateway to submit tgif' do
       tgif_submitted = {team_name: 'team_one', message: 'team_one_message'}
       submit_tgif.execute(tgif: tgif_submitted)
 
-      tgif = tgif_gateway.all.first
+      tgif = tgif_gateway.fetch_tgif.first
 
       expect(tgif.team_name).to eq('team_one')
       expect(tgif.message).to eq('team_one_message')
@@ -47,7 +35,7 @@ describe 'TGIF Service' do
       submit_tgif.execute(tgif: tgif_submitted_one)
       submit_tgif.execute(tgif: tgif_submitted_two)
 
-      tgif = tgif_gateway.all
+      tgif = tgif_gateway.fetch_tgif
 
       expect(tgif[0].team_name).to eq('team_one')
       expect(tgif[0].message).to eq('team_one_message')
