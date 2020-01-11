@@ -1,4 +1,4 @@
-describe SubmitTgif do
+describe UseCase::SubmitTgif do
   let(:tgif_gateway) { spy(all: []) }
   let(:use_case) { described_class.new(tgif_gateway: tgif_gateway) }
 

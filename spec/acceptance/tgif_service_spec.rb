@@ -2,19 +2,19 @@ describe 'TGIF Service' do
   let(:tgif_gateway) { Gateway::TgifsGateway.new }
 
   let(:submit_tgif) do
-    SubmitTgif.new(tgif_gateway: tgif_gateway)
+    UseCase::SubmitTgif.new(tgif_gateway: tgif_gateway)
   end
 
   let(:weekly_list_tgif) do
-    FetchWeeklyTgif.new(tgif_gateway: tgif_gateway)
+    UseCase::FetchWeeklyTgif.new(tgif_gateway: tgif_gateway)
   end
 
   let(:delete_all_tgif) do
-    DeleteAllTgif.new(tgif_gateway: tgif_gateway)
+    UseCase::DeleteAllTgif.new(tgif_gateway: tgif_gateway)
   end
 
   let(:delete_team_tgif) do
-    DeleteTeamTgif.new(tgif_gateway: tgif_gateway)
+    UseCase::DeleteTeamTgif.new(tgif_gateway: tgif_gateway)
   end
 
   context 'submit tgif' do

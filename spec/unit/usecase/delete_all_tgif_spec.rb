@@ -1,4 +1,4 @@
-describe DeleteAllTgif do
+describe UseCase::DeleteAllTgif do
   class TgifStub
     def initialize(id, team_name, message)
       @id = id

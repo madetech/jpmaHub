@@ -1,7 +1,7 @@
 describe Gateway::TgifsGateway do
 
   let(:tgif_gateway) { described_class.new }
-  
+
   it 'can get a weekly list of tgifs' do
     populate_weekly_tgif('team_name_one', 'message_one', DateTime.now - 8)
     populate_weekly_tgif('team_name_two', 'message_two', DateTime.now + 1)
