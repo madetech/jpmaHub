@@ -1,15 +1,16 @@
-.PHONY: down
-down:
-		docker-compose down
+.PHONY: setup-db
+setup-db:
+	echo ">>>>> Creating DB"
+	bundle exec rake db:create
+	echo ">>>>> Migrating DB"
+	bundle exec rake db:migrate
+	echo ">>>>> Populating Test DB"
+	bundle exec rake db:test:prepare
 
-.PHONY: build
-build:
-		docker-compose build
+.PHONY: run
+run:
+	bundle exec rerun rackup
 
-.PHONY: serve
-serve: down build
-		docker-compose run --rm --service-ports web bundle exec rerun -- rackup -o 0.0.0.0
-		
 .PHONY: test
-test: down build
-		docker-compose run --rm web ./bin/run_tests.sh
+test:
+	bundle exec rake spec
