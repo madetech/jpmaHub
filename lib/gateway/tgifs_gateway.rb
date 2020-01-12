@@ -41,5 +41,13 @@ module Gateway
     def delete_tgif(team_name)
       Tgif.delete_by('lower(team_name) = ?', team_name.downcase)
     end
+
+    def tgif_exists?(team_name)
+      Tgif.where('lower(team_name) = ?', team_name.downcase).exists?
+    end
+
+    def authorised_user?(team_name, slack_user_id)
+      Tgif.where("lower(team_name) = ? and lower(slack_user_id) = ?", team_name.downcase, slack_user_id.downcase).exists?
+    end
   end
 end

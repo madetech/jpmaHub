@@ -3,9 +3,9 @@ describe Gateway::TgifsGateway do
   let(:tgif_gateway) { described_class.new }
 
   it 'can get a weekly list of tgifs' do
-    populate_weekly_tgif('team_name_one', 'message_one', DateTime.now - 8)
-    populate_weekly_tgif('team_name_two', 'message_two', DateTime.now + 1)
-    populate_weekly_tgif('team_current_week', 'message', DateTime.now + 7)
+    populate_tgif('team_name_one', 'message_one', DateTime.now - 8, 'U1234')
+    populate_tgif('team_name_two', 'message_two', DateTime.now + 1, 'U1234')
+    populate_tgif('team_current_week', 'message', DateTime.now + 7, 'U1234')
 
     expect(tgif_gateway.fetch_tgif.count).to eq(1)
 
@@ -17,9 +17,9 @@ describe Gateway::TgifsGateway do
   end
 
   it 'can delete all tgifs' do
-    populate_tgif('team_name_one', 'message_one')
-    populate_tgif('team_name_two', 'message_two')
-    populate_tgif('team_current_week', 'message')
+    populate_tgif('team_name_one', 'message_one', 'U1234')
+    populate_tgif('team_name_two', 'message_two', 'U1234')
+    populate_tgif('team_current_week', 'message', 'U1234')
 
     expect(tgif_gateway.fetch_tgif.count).to eq(3);
 
@@ -29,8 +29,8 @@ describe Gateway::TgifsGateway do
   end
 
   it 'can delete tgif by team' do
-    populate_tgif('team_name_two', 'message_two')
-    populate_tgif('team', 'message_one')
+    populate_tgif('team_name_two', 'message_two', 'U1234')
+    populate_tgif('team', 'message_one', 'U1234')
 
     expect(tgif_gateway.fetch_tgif.count).to eq(2);
 
@@ -38,17 +38,48 @@ describe Gateway::TgifsGateway do
 
     expect(tgif_gateway.fetch_tgif.count).to eq(1);
   end
+
+  context 'checks if tgif exists by team' do
+    it 'returns true if tgif exists' do
+      populate_tgif('team_name_two', 'message_two', 'U1234')
+      populate_tgif('team', 'message_one', 'U1234')
+
+      expect(tgif_gateway.tgif_exists?('team')).to eq(true);
+    end
+
+    it 'returns false if tgif exists' do
+      populate_tgif('team_name_two', 'message_two', 'U1234')
+      populate_tgif('team', 'message_one', 'U1234')
+
+      expect(tgif_gateway.tgif_exists?('one')).to eq(false);
+    end
+  end
+
+  context 'checks if a user is authorised to delete tgif by team' do
+    it 'returns true if if the user not authorised to delete' do
+      populate_tgif('team_name_two', 'message_two', 'U1234')
+      populate_tgif('team', 'message_one', 'U1234')
+
+      expected_response = tgif_gateway.authorised_user?('team', 'U1234')
+
+      expect(expected_response).to eq(true);
+    end
+
+    it 'returns false if the user not authorised to delete' do
+      populate_tgif('team_name_two', 'message_two', 'U1234')
+      populate_tgif('team', 'message_two', 'U1234')
+
+      expected_response = tgif_gateway.authorised_user?('team', 'C5678')
+      expect(expected_response).to eq(false);
+    end
+  end
+
 end
 
-def populate_weekly_tgif(team_name, message, time = nil)
+def populate_tgif(team_name, message, time = DateTime.now, slack_user_id)
   tgif_builder = Builder::Tgif.new
-  tgif_builder.from(team_name: team_name, message: message)
+  tgif_builder.build_tgif(team_name: team_name, message: message, slack_user_id: slack_user_id)
   allow(DateTime).to receive(:now).and_return(time)
   tgif_gateway.save(tgif_builder.build)
 end
 
-def populate_tgif(team_name, message)
-  tgif_builder = Builder::Tgif.new
-  tgif_builder.from(team_name: team_name, message: message)
-  tgif_gateway.save(tgif_builder.build)
-end 

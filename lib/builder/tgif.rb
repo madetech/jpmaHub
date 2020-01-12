@@ -19,5 +19,13 @@ module Builder
           message: message,
       }
     end
+
+    def build_tgif(team_name:, message:, slack_user_id:)
+      @tgif_details = {
+          team_name: team_name,
+          message: message,
+          slack_user_id: slack_user_id
+      }
+    end
   end
 end

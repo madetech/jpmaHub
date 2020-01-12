@@ -43,7 +43,6 @@ describe 'TGIF Service' do
       expect(tgif[1].team_name).to eq('team_two')
       expect(tgif[1].message).to eq('team_two_message')
     end
-
   end
 
   context 'fetch tgif' do
@@ -78,39 +77,134 @@ describe 'TGIF Service' do
   end
 
   context 'delete all tgif' do
-    it 'uses tgif gateway to delete all tgif' do
-      team1_tgif_details = {team_name: 'teamOne', message: 'team_one_message'}
-      team2_tgif_details = {team_name: 'teamTwo', message: 'team_two_message'}
+    context 'given valid user with tgif exists' do
+      context 'when tgif exists' do
+        it 'deletes all tgif' do
+          team1_tgif_details = {team_name: 'teamOne', message: 'team_one_message'}
+          team2_tgif_details = {team_name: 'teamTwo', message: 'team_two_message'}
 
-      submit_tgif.execute(tgif: team1_tgif_details)
-      submit_tgif.execute(tgif: team2_tgif_details)
+          submit_tgif.execute(tgif: team1_tgif_details)
+          submit_tgif.execute(tgif: team2_tgif_details)
 
-      weekly_list_tgif.execute
+          weekly_list_tgif.execute
 
-      expect(tgif_gateway.fetch_tgif.count).to eq(2)
+          expect(tgif_gateway.fetch_tgif.count).to eq(2)
 
-      delete_all_tgif.execute
+          delete_all_tgif.execute
 
-      expect(tgif_gateway.fetch_tgif.count).to eq(0)
+          expect(tgif_gateway.fetch_tgif.count).to eq(0)
+        end
+
+        it 'returns is_deleted response true' do
+          team1_tgif_details = {team_name: 'teamOne', message: 'team_one_message'}
+          team2_tgif_details = {team_name: 'teamTwo', message: 'team_two_message'}
+
+          submit_tgif.execute(tgif: team1_tgif_details)
+          submit_tgif.execute(tgif: team2_tgif_details)
+
+          weekly_list_tgif.execute
+
+          expect(tgif_gateway.fetch_tgif.count).to eq(2)
+
+          response = delete_all_tgif.execute
+
+          expect(response[:is_deleted]).to eq(true)
+        end
+      end
+
+      context 'when no tgif to delete' do
+        it 'returns is_deleted response false' do
+          expect(delete_all_tgif.execute[:is_deleted]).to eq(false)
+        end
+      end
     end
   end
 
   context 'delete team tgif' do
+    context 'given authorised slack user with tgif exists' do
+      it 'uses tgif gateway to delete tgif by team' do
+        team1_tgif_details = {team_name: 'teamOne', message: 'team_one_message', slack_user_id: 'UA34'}
+        team2_tgif_details = {team_name: 'teamTwo', message: 'team_two_message', slack_user_id: 'U34'}
 
-    it 'uses tgif gateway to delete tgif by team' do
-      team1_tgif_details = {team_name: 'teamOne', message: 'team_one_message'}
-      team2_tgif_details = {team_name: 'teamTwo', message: 'team_two_message'}
+        submit_tgif.execute(tgif: team1_tgif_details)
+        submit_tgif.execute(tgif: team2_tgif_details)
 
-      submit_tgif.execute(tgif: team1_tgif_details)
-      submit_tgif.execute(tgif: team2_tgif_details)
+        weekly_list_tgif.execute
 
-      weekly_list_tgif.execute
+        expect(tgif_gateway.fetch_tgif.count).to eq(2)
 
-      expect(tgif_gateway.fetch_tgif.count).to eq(2)
+        delete_team_tgif.execute('teamTwo', 'U34')
 
-      delete_team_tgif.execute('teamTwo')
+        expect(tgif_gateway.fetch_tgif.count).to eq(1)
+      end
 
-      expect(tgif_gateway.fetch_tgif.count).to eq(1)
+      it 'returns tgif_deleted' do
+        team1_tgif_details = {team_name: 'teamOne', message: 'team_one_message', slack_user_id: 'UA34'}
+        team2_tgif_details = {team_name: 'teamTwo', message: 'team_two_message', slack_user_id: 'U34'}
+
+        submit_tgif.execute(tgif: team1_tgif_details)
+        submit_tgif.execute(tgif: team2_tgif_details)
+
+        weekly_list_tgif.execute
+
+        expect(tgif_gateway.fetch_tgif.count).to eq(2)
+
+        expected_response = delete_team_tgif.execute('teamTwo', 'U34')
+
+        expect(expected_response).to eq(:tgif_deleted)
+      end
     end
+
+    context 'given the slack user is not authorised to delete' do
+      it 'doesnt delete tgif' do
+        team1_tgif_details = {team_name: 'teamOne', message: 'team_one_message', slack_user_id: 'UA34'}
+        team2_tgif_details = {team_name: 'teamTwo', message: 'team_two_message', slack_user_id: 'U34'}
+
+        submit_tgif.execute(tgif: team1_tgif_details)
+        submit_tgif.execute(tgif: team2_tgif_details)
+
+        weekly_list_tgif.execute
+
+        expect(tgif_gateway.fetch_tgif.count).to eq(2)
+
+        delete_team_tgif.execute('teamTwo', 'A134')
+
+        expect(tgif_gateway.fetch_tgif.count).to eq(2)
+      end
+
+      it 'returns :unauthorised_user' do
+        team1_tgif_details = {team_name: 'teamOne', message: 'team_one_message', slack_user_id: 'UA34'}
+        team2_tgif_details = {team_name: 'teamTwo', message: 'team_two_message', slack_user_id: 'U34'}
+
+        submit_tgif.execute(tgif: team1_tgif_details)
+        submit_tgif.execute(tgif: team2_tgif_details)
+
+        weekly_list_tgif.execute
+
+        expect(tgif_gateway.fetch_tgif.count).to eq(2)
+
+        expected_response = delete_team_tgif.execute('teamTwo', 'A134')
+
+        expect(expected_response).to eq(:unauthorised_user)
+      end
+    end
+
+    context 'when tgif doesnt exist' do
+      it 'returns no_tgif_found' do
+        team1_tgif_details = {team_name: 'teamOne', message: 'team_one_message', slack_user_id: 'UA34'}
+        team2_tgif_details = {team_name: 'teamTwo', message: 'team_two_message', slack_user_id: 'U34'}
+
+        submit_tgif.execute(tgif: team1_tgif_details)
+        submit_tgif.execute(tgif: team2_tgif_details)
+
+        weekly_list_tgif.execute
+
+        expect(tgif_gateway.fetch_tgif.count).to eq(2)
+
+        expected_response = delete_team_tgif.execute('team', 'A134')
+        expect(expected_response).to eq(:no_tgif_found)
+      end
+    end
+
   end
 end

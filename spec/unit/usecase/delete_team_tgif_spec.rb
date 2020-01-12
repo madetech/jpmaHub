@@ -1,25 +1,25 @@
 describe UseCase::DeleteTeamTgif do
-  class TgifStub
-    def initialize(id, team_name, message)
-      @id = id
-      @team_name = team_name
-      @message = message
-    end
-
-    attr_reader :id, :team_name, :message
-  end
-
   it 'uses the tgif gateway to delete tgif by team' do
-    use_case = described_class.new(tgif_gateway: double(delete_tgif: 1))
-    response = use_case.execute('teamone')
+    tgif_stub = double(authorised_user?: true, tgif_exists?: true, delete_tgif: 0)
+    use_case = described_class.new(tgif_gateway: tgif_stub)
+    response = use_case.execute('teamone', 'UF12')
 
-    expect(response[:is_deleted]).to eq(true)
+    expect(response).to eq(:tgif_deleted)
   end
 
-  it 'returns false when no tgif to delete' do
-    use_case = described_class.new(tgif_gateway: double(delete_tgif: 0))
-    response = use_case.execute('teamone')
+  it 'returns unauthorised_user when the user is not authorised to delete' do
+    tgif_stub = double(authorised_user?: false, tgif_exists?: true)
+    use_case = described_class.new(tgif_gateway: tgif_stub)
+    response = use_case.execute('teamone', 'UF22')
 
-    expect(response[:is_deleted]).to eq(false)
+    expect(response).to eq(:unauthorised_user)
+  end
+
+  it 'returns no_tgif_found when no tgif to delete' do
+    tgif_stub = double(tgif_exists?: false)
+    use_case = described_class.new(tgif_gateway: tgif_stub)
+    response = use_case.execute('team', 'UF22')
+
+    expect(response).to eq(:no_tgif_found)
   end
 end 
