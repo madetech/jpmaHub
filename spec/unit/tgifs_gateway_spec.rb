@@ -17,47 +17,46 @@ describe Gateway::TgifsGateway do
   end
 
   it 'can delete all tgifs' do
-    populate_tgif('team_name_one', 'message_one', 'U1234')
-    populate_tgif('team_name_two', 'message_two', 'U1234')
-    populate_tgif('team_current_week', 'message', 'U1234')
+    populate_tgif('team_name_one', 'team_message_one', '11234')
+    populate_tgif('team_name_two', 'team_message_two', '11234')
 
-    expect(tgif_gateway.fetch_tgif.count).to eq(3);
+    expect(tgif_gateway.fetch_tgif.count).to eq(2)
 
     tgif_gateway.delete_all
 
-    expect(tgif_gateway.fetch_tgif.count).to eq(0);
+    expect(tgif_gateway.fetch_tgif.count).to eq(0)
   end
 
   it 'can delete tgif by team' do
-    populate_tgif('team_name_two', 'message_two', 'U1234')
+    populate_tgif('team_name', 'message', 'U1234')
     populate_tgif('team', 'message_one', 'U1234')
 
-    expect(tgif_gateway.fetch_tgif.count).to eq(2);
+    expect(tgif_gateway.fetch_tgif.count).to eq(2)
 
     tgif_gateway.delete_tgif('Team')
 
-    expect(tgif_gateway.fetch_tgif.count).to eq(1);
+    expect(tgif_gateway.fetch_tgif.count).to eq(1)
   end
 
   context 'checks if tgif exists by team' do
     it 'returns true if tgif exists' do
       populate_tgif('team_name_two', 'message_two', 'U1234')
-      populate_tgif('team', 'message_one', 'U1234')
+      populate_tgif('team', 'message', 'U1234')
 
-      expect(tgif_gateway.tgif_exists?('team')).to eq(true);
+      expect(tgif_gateway.tgif_exists?('team')).to eq(true)
     end
 
     it 'returns false if tgif exists' do
-      populate_tgif('team_name_two', 'message_two', 'U1234')
+      populate_tgif('name_two', 'message_two', 'U1234')
       populate_tgif('team', 'message_one', 'U1234')
 
-      expect(tgif_gateway.tgif_exists?('one')).to eq(false);
+      expect(tgif_gateway.tgif_exists?('one')).to eq(false)
     end
   end
 
   context 'checks if a user is authorised to delete tgif by team' do
     it 'returns true if if the user not authorised to delete' do
-      populate_tgif('team_name_two', 'message_two', 'U1234')
+      populate_tgif('team_two', 'message_two', 'U134')
       populate_tgif('team', 'message_one', 'U1234')
 
       expected_response = tgif_gateway.authorised_user?('team', 'U1234')
@@ -66,7 +65,7 @@ describe Gateway::TgifsGateway do
     end
 
     it 'returns false if the user not authorised to delete' do
-      populate_tgif('team_name_two', 'message_two', 'U1234')
+      populate_tgif('team_name_three', 'message_three', 'A234')
       populate_tgif('team', 'message_two', 'U1234')
 
       expected_response = tgif_gateway.authorised_user?('team', 'C5678')

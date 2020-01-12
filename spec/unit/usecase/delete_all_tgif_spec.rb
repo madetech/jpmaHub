@@ -1,14 +1,4 @@
 describe UseCase::DeleteAllTgif do
-  class TgifStub
-    def initialize(id, team_name, message)
-      @id = id
-      @team_name = team_name
-      @message = message
-    end
-
-    attr_reader :id, :team_name, :message
-  end
-
   it 'uses the tgif gateway to delete tgifs' do
     tgif_gateway = spy(fetch_tgif: [TgifStub.new('1', 'teamone', 'message one'),
                                     TgifStub.new('2', 'teamtwo', 'message two')])

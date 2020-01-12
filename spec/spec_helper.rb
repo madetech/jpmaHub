@@ -19,6 +19,17 @@ module RSpecMixin
   end
 end
 
+class TgifStub
+  def initialize(id, team_name, message)
+    @id = id
+    @team_name = team_name
+    @message = message
+  end
+
+  attr_reader :id, :team_name, :message, :slack_user_id
+end
+
+
 RSpec.configure do |config|
   config.include RSpecMixin
   config.include Rack::Test::Methods

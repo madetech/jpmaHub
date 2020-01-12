@@ -17,6 +17,14 @@ describe 'TGIF Service' do
     UseCase::DeleteTeamTgif.new(tgif_gateway: tgif_gateway)
   end
 
+  def submit_tgifs
+    team1_tgif_details = {team_name: 'teamOne', message: 'team_one_message', slack_user_id: 'UA34'}
+    team2_tgif_details = {team_name: 'teamTwo', message: 'team_two_message', slack_user_id: 'U34'}
+
+    submit_tgif.execute(tgif: team1_tgif_details)
+    submit_tgif.execute(tgif: team2_tgif_details)
+  end
+
   context 'submit tgif' do
     it 'use tgif gateway to submit tgif' do
       tgif_submitted = {team_name: 'team_one', message: 'team_one_message'}
@@ -29,18 +37,14 @@ describe 'TGIF Service' do
     end
 
     it 'uses tgif gateway to submit multiple tgif' do
-      tgif_submitted_one = {team_name: 'team_one', message: 'team_one_message'}
-      tgif_submitted_two = {team_name: 'team_two', message: 'team_two_message'}
-
-      submit_tgif.execute(tgif: tgif_submitted_one)
-      submit_tgif.execute(tgif: tgif_submitted_two)
+      submit_tgifs
 
       tgif = tgif_gateway.fetch_tgif
 
-      expect(tgif[0].team_name).to eq('team_one')
+      expect(tgif[0].team_name).to eq('teamOne')
       expect(tgif[0].message).to eq('team_one_message')
 
-      expect(tgif[1].team_name).to eq('team_two')
+      expect(tgif[1].team_name).to eq('teamTwo')
       expect(tgif[1].message).to eq('team_two_message')
     end
   end
@@ -80,11 +84,7 @@ describe 'TGIF Service' do
     context 'given valid user with tgif exists' do
       context 'when tgif exists' do
         it 'deletes all tgif' do
-          team1_tgif_details = {team_name: 'teamOne', message: 'team_one_message'}
-          team2_tgif_details = {team_name: 'teamTwo', message: 'team_two_message'}
-
-          submit_tgif.execute(tgif: team1_tgif_details)
-          submit_tgif.execute(tgif: team2_tgif_details)
+          submit_tgifs
 
           weekly_list_tgif.execute
 
@@ -96,11 +96,7 @@ describe 'TGIF Service' do
         end
 
         it 'returns is_deleted response true' do
-          team1_tgif_details = {team_name: 'teamOne', message: 'team_one_message'}
-          team2_tgif_details = {team_name: 'teamTwo', message: 'team_two_message'}
-
-          submit_tgif.execute(tgif: team1_tgif_details)
-          submit_tgif.execute(tgif: team2_tgif_details)
+          submit_tgifs
 
           weekly_list_tgif.execute
 
@@ -123,11 +119,7 @@ describe 'TGIF Service' do
   context 'delete team tgif' do
     context 'given authorised slack user with tgif exists' do
       it 'uses tgif gateway to delete tgif by team' do
-        team1_tgif_details = {team_name: 'teamOne', message: 'team_one_message', slack_user_id: 'UA34'}
-        team2_tgif_details = {team_name: 'teamTwo', message: 'team_two_message', slack_user_id: 'U34'}
-
-        submit_tgif.execute(tgif: team1_tgif_details)
-        submit_tgif.execute(tgif: team2_tgif_details)
+        submit_tgifs
 
         weekly_list_tgif.execute
 
@@ -139,11 +131,7 @@ describe 'TGIF Service' do
       end
 
       it 'returns tgif_deleted' do
-        team1_tgif_details = {team_name: 'teamOne', message: 'team_one_message', slack_user_id: 'UA34'}
-        team2_tgif_details = {team_name: 'teamTwo', message: 'team_two_message', slack_user_id: 'U34'}
-
-        submit_tgif.execute(tgif: team1_tgif_details)
-        submit_tgif.execute(tgif: team2_tgif_details)
+        submit_tgifs
 
         weekly_list_tgif.execute
 
@@ -157,11 +145,7 @@ describe 'TGIF Service' do
 
     context 'given the slack user is not authorised to delete' do
       it 'doesnt delete tgif' do
-        team1_tgif_details = {team_name: 'teamOne', message: 'team_one_message', slack_user_id: 'UA34'}
-        team2_tgif_details = {team_name: 'teamTwo', message: 'team_two_message', slack_user_id: 'U34'}
-
-        submit_tgif.execute(tgif: team1_tgif_details)
-        submit_tgif.execute(tgif: team2_tgif_details)
+        submit_tgifs
 
         weekly_list_tgif.execute
 
@@ -173,11 +157,7 @@ describe 'TGIF Service' do
       end
 
       it 'returns :unauthorised_user' do
-        team1_tgif_details = {team_name: 'teamOne', message: 'team_one_message', slack_user_id: 'UA34'}
-        team2_tgif_details = {team_name: 'teamTwo', message: 'team_two_message', slack_user_id: 'U34'}
-
-        submit_tgif.execute(tgif: team1_tgif_details)
-        submit_tgif.execute(tgif: team2_tgif_details)
+        submit_tgifs
 
         weekly_list_tgif.execute
 
@@ -191,11 +171,7 @@ describe 'TGIF Service' do
 
     context 'when tgif doesnt exist' do
       it 'returns no_tgif_found' do
-        team1_tgif_details = {team_name: 'teamOne', message: 'team_one_message', slack_user_id: 'UA34'}
-        team2_tgif_details = {team_name: 'teamTwo', message: 'team_two_message', slack_user_id: 'U34'}
-
-        submit_tgif.execute(tgif: team1_tgif_details)
-        submit_tgif.execute(tgif: team2_tgif_details)
+        submit_tgifs
 
         weekly_list_tgif.execute
 
@@ -205,6 +181,6 @@ describe 'TGIF Service' do
         expect(expected_response).to eq(:no_tgif_found)
       end
     end
-
   end
 end
+

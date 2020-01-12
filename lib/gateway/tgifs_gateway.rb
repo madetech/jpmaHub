@@ -2,9 +2,7 @@ require 'sinatra/activerecord'
 
 module Gateway
   class TgifsGateway
-    class Tgif < ActiveRecord::Base
-
-    end
+    class Tgif < ActiveRecord::Base; end
 
     def fetch_tgif
       weekly_time_range = (6.days.ago..DateTime.now)
