@@ -7,7 +7,7 @@ describe UseCase::DeleteTeamTgif do
     expect(response).to eq(:tgif_deleted)
   end
 
-  it 'returns unauthorised_user when the user is not authorised to delete' do
+  it 'returns unauthorised_user when unauthorised user deletes tgif' do
     tgif_stub = double(authorised_user?: false, tgif_exists?: true)
     use_case = described_class.new(tgif_gateway: tgif_stub)
     response = use_case.execute('teamone', 'UF22')

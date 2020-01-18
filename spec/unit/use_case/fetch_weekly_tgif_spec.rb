@@ -1,5 +1,5 @@
 describe UseCase::FetchWeeklyTgif do
-  it 'returns tgifs to view by weekly' do
+  it 'returns tgifs when tgifs exist' do
     team_one_tgif = {id: '1', team_name: 'teamone', message: 'message one'}
     team_two_tgif = {id: '2', team_name: 'teamtwo', message: 'message two'}
     list_weekly_tgifs = described_class.new(
@@ -14,7 +14,7 @@ describe UseCase::FetchWeeklyTgif do
     expect(response[1]).to eq(team_two_tgif)
   end
 
-  it 'returns nil when no tgifs to view for the week' do
+  it 'returns nil when there are no tgifs to fetch' do
     list_weekly_tgifs_details = described_class.new(tgif_gateway: double(fetch_tgif: []))
     expect(list_weekly_tgifs_details.execute).to eq(nil)
   end

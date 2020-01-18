@@ -2,7 +2,7 @@ describe UseCase::SubmitTgif do
   let(:tgif_gateway) { spy(all: []) }
   let(:use_case) { described_class.new(tgif_gateway: tgif_gateway) }
 
-  it 'uses the tgif gateway to submit tgif details' do
+  it 'uses the tgif gateway to submit tgifs' do
     tgif_details = {team_name: 'teamone', message: 'we done it', slack_user_id: 'U78'}
     use_case.execute(tgif: tgif_details)
 
@@ -13,8 +13,8 @@ describe UseCase::SubmitTgif do
     end
   end
 
-  it 'returns an error for empty tgif details' do
+  it 'returns an error when no tgif to submit' do
     response = use_case.execute(tgif: {})
-    expect(response).to eq(successful: false, error: "no tgif to submit")
+    expect(response).to eq(successful: false, error: 'no tgif to submit')
   end
 end 

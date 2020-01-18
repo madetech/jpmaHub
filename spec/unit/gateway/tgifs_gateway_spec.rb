@@ -2,7 +2,7 @@ describe Gateway::TgifsGateway do
 
   let(:tgif_gateway) { described_class.new }
 
-  it 'can get a weekly list of tgifs' do
+  it 'can get a weekly tgifs' do
     populate_tgif('team_name_one', 'message_one', DateTime.now - 8, 'U1234')
     populate_tgif('team_name_two', 'message_two', DateTime.now + 1, 'U1234')
     populate_tgif('team_current_week', 'message', DateTime.now + 7, 'U1234')
@@ -38,15 +38,16 @@ describe Gateway::TgifsGateway do
     expect(tgif_gateway.fetch_tgif.count).to eq(1)
   end
 
-  context 'checks if tgif exists by team' do
-    it 'returns true if tgif exists' do
+  context 'when tgif exists by team' do
+    it 'returns true' do
       populate_tgif('team_name_two', 'message_two', 'U1234')
       populate_tgif('team', 'message', 'U1234')
 
       expect(tgif_gateway.tgif_exists?('team')).to eq(true)
     end
-
-    it 'returns false if tgif exists' do
+  end
+  context 'when tgif doesnt exist by team' do
+    it 'returns false' do
       populate_tgif('name_two', 'message_two', 'U1234')
       populate_tgif('team', 'message_one', 'U1234')
 
@@ -54,8 +55,8 @@ describe Gateway::TgifsGateway do
     end
   end
 
-  context 'checks if a user is authorised to delete tgif by team' do
-    it 'returns true if if the user not authorised to delete' do
+  context 'when authorised user deletes tgif by team' do
+    it 'returns true' do
       populate_tgif('team_two', 'message_two', 'U134')
       populate_tgif('team', 'message_one', 'U1234')
 
@@ -63,8 +64,10 @@ describe Gateway::TgifsGateway do
 
       expect(expected_response).to eq(true);
     end
+  end
 
-    it 'returns false if the user not authorised to delete' do
+  context 'when unauthorised user deletes tgif by team' do
+    it 'returns false' do
       populate_tgif('team_name_three', 'message_three', 'A234')
       populate_tgif('team', 'message_two', 'U1234')
 
@@ -72,7 +75,6 @@ describe Gateway::TgifsGateway do
       expect(expected_response).to eq(false);
     end
   end
-
 end
 
 def populate_tgif(team_name, message, time = DateTime.now, slack_user_id)

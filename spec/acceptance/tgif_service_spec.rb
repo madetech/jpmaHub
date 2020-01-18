@@ -26,7 +26,7 @@ describe 'TGIF Service' do
   end
 
   context 'submit tgif' do
-    it 'use tgif gateway to submit tgif' do
+    it 'uses tgif gateway to submit tgif' do
       tgif_submitted = {team_name: 'team_one', message: 'team_one_message'}
       submit_tgif.execute(tgif: tgif_submitted)
 
@@ -36,7 +36,7 @@ describe 'TGIF Service' do
       expect(tgif.message).to eq('team_one_message')
     end
 
-    it 'uses tgif gateway to submit multiple tgif' do
+    it 'uses tgif gateway to submit multiple tgifs' do
       submit_tgifs
 
       tgif = tgif_gateway.fetch_tgif
@@ -80,9 +80,9 @@ describe 'TGIF Service' do
     end
   end
 
-  context 'delete all tgif' do
-    context 'given valid user with tgif exists' do
-      context 'when tgif exists' do
+  context 'delete all tgifs' do
+    context 'when authorised user deletes all tgifs' do
+      context 'which exists' do
         it 'deletes all tgif' do
           submit_tgifs
 
@@ -108,7 +108,7 @@ describe 'TGIF Service' do
         end
       end
 
-      context 'when no tgif to delete' do
+      context 'which doesnt exists' do
         it 'returns is_deleted response false' do
           expect(delete_all_tgif.execute[:is_deleted]).to eq(false)
         end
@@ -117,7 +117,7 @@ describe 'TGIF Service' do
   end
 
   context 'delete team tgif' do
-    context 'given authorised slack user with tgif exists' do
+    context 'when authorised user deletes tgif by team' do
       it 'uses tgif gateway to delete tgif by team' do
         submit_tgifs
 
@@ -143,7 +143,7 @@ describe 'TGIF Service' do
       end
     end
 
-    context 'given the slack user is not authorised to delete' do
+    context 'when unauthorised user deletes tgif by team' do
       it 'doesnt delete tgif' do
         submit_tgifs
 
