@@ -162,7 +162,8 @@ describe 'Acceptance::TgifService' do
       end
 
       it 'cannot submit TGIF' do
-        expect(response.body).to include("TGIF can't be submitted and has execeeded 280 characters limit")
+        tgif_response = "*TGIF can't be submitted*: Exceeded the maximum 280 characters limit by *1 character(s)*"
+        expect(response.body).to include(tgif_response)
       end
     end
   end

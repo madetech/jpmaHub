@@ -30,7 +30,6 @@ end
 RSpec.configure do |config|
   config.include RSpecMixin
   config.include Rack::Test::Methods
-  config.filter_run_when_matching :focus
   config.run_all_when_everything_filtered
 
   config.expect_with :rspec do |expectations|

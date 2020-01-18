@@ -56,7 +56,9 @@ class TgifService < Sinatra::Base
 
       "*TGIF has successfully submitted for #{team_name}*"
     else
-      "*TGIF can't be submitted and has execeeded 280 characters limit*"
+      over_limit_by = message.size - 280
+      "*TGIF can't be submitted*: Exceeded the maximum 280 characters limit by *#{over_limit_by} character(s)*"
+
     end
   end
 end
