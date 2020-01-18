@@ -8,8 +8,9 @@ gem 'pg'
 gem 'rerun'
 gem 'rdiscount'
 gem 'rake'
-gem "sinatra-activerecord"
+gem 'sinatra-activerecord'
 gem 'sinatra'
+gem 'zeitwerk', '~> 2.2.2'
 
 group :test do
   gem 'database_cleaner'

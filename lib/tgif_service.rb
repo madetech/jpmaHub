@@ -2,14 +2,7 @@
 
 require 'rdiscount'
 require 'sinatra'
-require 'builder/tgif'
-require 'container'
-require 'domain/tgif'
-require 'gateway/tgifs_gateway'
-require 'use_case/fetch_weekly_tgif'
-require 'use_case/submit_tgif'
-require 'use_case/delete_all_tgif'
-require 'use_case/delete_team_tgif'
+require_relative 'domain/tgif'
 
 class TgifService < Sinatra::Base
   def initialize

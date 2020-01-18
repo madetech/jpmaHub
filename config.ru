@@ -1,6 +1,9 @@
 # frozen_string_literal: true
 
-$LOAD_PATH << './lib'
-require './lib/tgif_service'
+require 'zeitwerk'
+
+loader = Zeitwerk::Loader.new
+loader.push_dir("#{__dir__}/./lib")
+loader.setup
 
 run TgifService

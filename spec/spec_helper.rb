@@ -1,15 +1,12 @@
 require 'database_cleaner'
 require 'date'
-require 'sinatra'
 require 'rack/test'
-require 'builder/tgif'
-require 'domain/tgif'
-require 'gateway/tgifs_gateway'
-require 'use_case/fetch_weekly_tgif'
-require 'use_case/submit_tgif'
-require 'use_case/delete_all_tgif'
-require 'use_case/delete_team_tgif'
-require 'tgif_service'
+require 'sinatra'
+require 'zeitwerk'
+
+loader = Zeitwerk::Loader.new
+loader.push_dir("#{__dir__}/../lib/")
+loader.setup
 
 ENV['RACK_ENV'] = 'test'
 
