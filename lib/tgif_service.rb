@@ -6,10 +6,10 @@ require 'builder/tgif'
 require 'container'
 require 'domain/tgif'
 require 'gateway/tgifs_gateway'
-require 'usecase/fetch_weekly_tgif'
-require 'usecase/submit_tgif'
-require 'usecase/delete_all_tgif'
-require 'usecase/delete_team_tgif'
+require 'use_case/fetch_weekly_tgif'
+require 'use_case/submit_tgif'
+require 'use_case/delete_all_tgif'
+require 'use_case/delete_team_tgif'
 
 class TgifService < Sinatra::Base
   def initialize
