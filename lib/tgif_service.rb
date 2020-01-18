@@ -1,14 +1,15 @@
-require 'json'
+# frozen_string_literal: true
+
 require 'rdiscount'
 require 'sinatra'
-require './lib/builder/tgif'
-require './lib/container'
-require './lib/domain/tgif'
-require './lib/gateway/tgifs_gateway.rb'
-require './lib/usecase/fetch_weekly_tgif'
-require './lib/usecase/submit_tgif'
-require './lib/usecase/delete_all_tgif'
-require './lib/usecase/delete_team_tgif'
+require 'builder/tgif'
+require 'container'
+require 'domain/tgif'
+require 'gateway/tgifs_gateway'
+require 'usecase/fetch_weekly_tgif'
+require 'usecase/submit_tgif'
+require 'usecase/delete_all_tgif'
+require 'usecase/delete_team_tgif'
 
 class TgifService < Sinatra::Base
   def initialize

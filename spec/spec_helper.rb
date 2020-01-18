@@ -9,7 +9,7 @@ require 'usecase/fetch_weekly_tgif'
 require 'usecase/submit_tgif'
 require 'usecase/delete_all_tgif'
 require 'usecase/delete_team_tgif'
-require_relative '../tgif_service'
+require 'tgif_service'
 
 ENV['RACK_ENV'] = 'test'
 
