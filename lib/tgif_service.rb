@@ -10,6 +10,10 @@ class TgifService < Sinatra::Base
     super
   end
 
+  post '/help' do
+    erb :help
+  end
+
   post '/delete-all' do
     response = params['user_id']
 

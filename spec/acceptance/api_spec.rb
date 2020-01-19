@@ -167,4 +167,19 @@ describe 'Acceptance::TgifService' do
       end
     end
   end
+
+  describe '.post /help' do
+    let(:response) { post '/help' }
+
+    it 'returns status 200' do
+      expect(response.status).to eq(200)
+    end
+
+    it 'returns help commands' do
+      expect(response.body).to include('/tgif_list')
+      expect(response.body).to include('/tgif_submit')
+      expect(response.body).to include('/tgif_delete')
+      expect(response.body).to include('/tgif_delete_all')
+    end
+  end
 end 
