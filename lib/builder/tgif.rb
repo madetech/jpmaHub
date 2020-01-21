@@ -3,7 +3,7 @@ module Builder
     attr_accessor :tgif_details
 
     def build
-      tgif = ::Tgif.new
+      tgif = Domain::Tgif.new
       tgif.id = tgif_details[:id]
       tgif.team_name = tgif_details[:team_name]
       tgif.message = tgif_details[:message]

@@ -2,7 +2,6 @@
 
 require 'rdiscount'
 require 'sinatra'
-require_relative 'domain/tgif'
 
 class TgifService < Sinatra::Base
   def initialize
