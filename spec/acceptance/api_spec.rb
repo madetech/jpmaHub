@@ -71,19 +71,37 @@ describe 'Acceptance::TgifService' do
       end
     end
 
-
     context 'when authorised user deletes tgif that exists' do
-      let(:response) do
-        post '/submit-tgif', {:text => 'team | message one', :user_id => '1234'}
-        post '/delete-tgif', {:text => 'Team', :user_id => '1234'}
+      context 'given tgif already exists for the team by different user' do
+        let(:response) do
+          post '/submit-tgif', {:text => 'team | message one', :user_id => '1234'}
+          post '/submit-tgif', {:text => 'team | message two', :user_id => '234'}
+          post '/delete-tgif', {:text => 'Team', :user_id => '1234'}
+          post '/weekly-tgifs'
+        end
+        it 'returns status 200' do
+          expect(response.status).to eq(200)
+        end
+
+        it 'doesnt not delete the tgif submitted by the other user' do
+          expect(response.body).not_to include('message one')
+          expect(response.body).to include('message two')
+        end
       end
 
-      it 'returns status 200' do
-        expect(response.status).to eq(200)
-      end
+      context 'given tgif does not exist already' do
+        let(:response) do
+          post '/submit-tgif', {:text => 'team | message one', :user_id => '1234'}
+          post '/delete-tgif', {:text => 'Team', :user_id => '1234'}
+        end
 
-      it 'returns tgif deleted' do
-        expect(response.body).to include('TGIF deleted')
+        it 'returns status 200' do
+          expect(response.status).to eq(200)
+        end
+
+        it 'returns tgif deleted' do
+          expect(response.body).to include('TGIF deleted')
+        end
       end
     end
 
@@ -101,6 +119,7 @@ describe 'Acceptance::TgifService' do
         expect(response.body).to include('You are not authorised to delete tgifs')
       end
     end
+
 
   end
 

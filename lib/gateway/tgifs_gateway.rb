@@ -37,8 +37,8 @@ module Gateway
       Tgif.delete_all
     end
 
-    def delete_tgif(team_name)
-      Tgif.delete_by('lower(team_name) = ?', team_name.downcase)
+    def delete_tgif(team_name, slack_user_id)
+      Tgif.delete_by('lower(team_name) = ? and lower(slack_user_id) = ?', team_name.downcase, slack_user_id.downcase)
     end
 
     def tgif_exists?(team_name)

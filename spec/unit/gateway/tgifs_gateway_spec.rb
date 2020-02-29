@@ -30,12 +30,13 @@ describe Gateway::TgifsGateway do
   it 'can delete tgif by team' do
     populate_tgif('team_name', 'message', 'U1234')
     populate_tgif('team', 'message_one', 'U1234')
+    populate_tgif('team', 'message_two', 'U134')
+
+    expect(tgif_gateway.fetch_tgif.count).to eq(3)
+
+    tgif_gateway.delete_tgif('Team', 'U1234')
 
     expect(tgif_gateway.fetch_tgif.count).to eq(2)
-
-    tgif_gateway.delete_tgif('Team')
-
-    expect(tgif_gateway.fetch_tgif.count).to eq(1)
   end
 
   context 'when tgif exists by team' do

@@ -118,28 +118,50 @@ describe 'TGIF Service' do
 
   context 'delete team tgif' do
     context 'when authorised user deletes tgif by team' do
-      it 'uses tgif gateway to delete tgif by team' do
-        submit_tgifs
+      context 'given tgif already exists for the team by different user' do
+        it 'doesnt not delete the tgif submitted by the other user' do
+          team_tgif_one = {team_name: 'teamOne', message: 'team_one_message', slack_user_id: 'UA34'}
+          team_tgif_two = {team_name: 'teamOne', message: 'team_two_message', slack_user_id: 'U34'}
+          team_tgif_three = {team_name: 'teamOne', message: 'team_two_message', slack_user_id: 'U4'}
 
-        weekly_list_tgif.execute
+          submit_tgif.execute(tgif: team_tgif_one)
+          submit_tgif.execute(tgif: team_tgif_two)
+          submit_tgif.execute(tgif: team_tgif_three)
 
-        expect(tgif_gateway.fetch_tgif.count).to eq(2)
+          weekly_list_tgif.execute
 
-        delete_team_tgif.execute('teamTwo', 'U34')
+          expect(tgif_gateway.fetch_tgif.count).to eq(3)
 
-        expect(tgif_gateway.fetch_tgif.count).to eq(1)
+          delete_team_tgif.execute('teamOne', 'U34')
+
+          expect(tgif_gateway.fetch_tgif.count).to eq(2)
+        end
       end
 
-      it 'returns tgif_deleted' do
-        submit_tgifs
+      context 'given tgif does not exist already' do
+        it 'uses tgif gateway to delete tgif by team' do
+          submit_tgifs
 
-        weekly_list_tgif.execute
+          weekly_list_tgif.execute
 
-        expect(tgif_gateway.fetch_tgif.count).to eq(2)
+          expect(tgif_gateway.fetch_tgif.count).to eq(2)
 
-        expected_response = delete_team_tgif.execute('teamTwo', 'U34')
+          delete_team_tgif.execute('teamTwo', 'U34')
 
-        expect(expected_response).to eq(:tgif_deleted)
+          expect(tgif_gateway.fetch_tgif.count).to eq(1)
+        end
+
+        it 'returns tgif_deleted' do
+          submit_tgifs
+
+          weekly_list_tgif.execute
+
+          expect(tgif_gateway.fetch_tgif.count).to eq(2)
+
+          expected_response = delete_team_tgif.execute('teamTwo', 'U34')
+
+          expect(expected_response).to eq(:tgif_deleted)
+        end
       end
     end
 
