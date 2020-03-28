@@ -3,9 +3,11 @@ require 'date'
 require 'rack/test'
 require 'sinatra'
 require 'zeitwerk'
+require 'webmock/rspec'
 
 loader = Zeitwerk::Loader.new
 loader.push_dir("#{__dir__}/../lib/")
+loader.push_dir("#{__dir__}/../spec/stub/")
 loader.setup
 
 ENV['RACK_ENV'] = 'test'
@@ -37,7 +39,7 @@ RSpec.configure do |config|
     expectations.include_chain_clauses_in_custom_matcher_descriptions = true
   end
 
-
+  WebMock.disable_net_connect!(allow_localhost: true)
   config.mock_with :rspec do |mocks|
     mocks.verify_partial_doubles = true
   end

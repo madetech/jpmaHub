@@ -201,4 +201,157 @@ describe 'Acceptance::TgifService' do
       expect(response.body).to include('/tgif_delete_all')
     end
   end
+
+  describe '.post /open-list-tgif' do
+    context 'when the api call to open list modal is successful with tgif exists'  do
+      let(:trigger_id) { '9x6284843y43' }
+      let(:list_tgif) do
+        [{ "type": "divider"},{
+          "type": "section",
+          "text": {
+              "type": "mrkdwn",
+              "text": "*Team weekly*\n message one}"
+          }
+      }]
+      end
+
+      before do
+        OpenTgifModal::SuccessfulStub.new.list_modal(trigger_id, list_tgif)
+      end
+
+      let(:response) do
+        post '/open-list-tgif', {:trigger_id => trigger_id}
+        post '/submit-tgif', {:text => 'Team weekly | message one', :user_id => '134'}
+        post '/weekly-tgifs'
+      end
+
+      it 'returns status 200' do
+        expect(response.status).to eq(200)
+      end
+
+      it 'returns team name' do
+        expect(response.body).to include('Team weekly')
+      end
+    end
+
+    context 'when the api call to open list modal is successful with no tgif exists'  do
+      let(:trigger_id) { '9x6284843y43' }
+      let(:list_tgif) do
+        [{ "type": "divider"},]
+      end
+
+      before do
+        OpenTgifModal::SuccessfulStub.new.list_modal(trigger_id, list_tgif)
+      end
+
+      let(:response) do
+        post '/open-list-tgif', {:trigger_id => trigger_id}
+        post '/weekly-tgifs'
+      end
+
+      it 'returns status 200' do
+        expect(response.status).to eq(200)
+      end
+
+      it 'returns team name' do
+        expect(response.body).to include('No Tgifs yet')
+      end
+    end
+
+    context 'when the api call to open list modal is unsuccessful' do
+      let(:trigger_id) { '84843y43' }
+      let(:list_tgif) do
+        [{ "type": "divider"},{
+            "type": "section",
+            "text": {
+                "type": "mrkdwn",
+                "text": "*Team one*\n team message}"
+            }
+        }]
+      end
+      before do
+        OpenTgifModal::UnsuccessfulStub.new.list_modal(trigger_id, list_tgif)
+      end
+
+      let(:response) do
+        post '/open-list-tgif', {:trigger_id => trigger_id}
+      end
+
+      it 'cannot open the open the tgif modal' do
+        expect(response.body).to include('TGIF modal cannot be opened')
+      end
+    end
+  end
+
+  describe '.post /tgif-open-modal' do
+    context 'when the api call to open slack modal is successful' do
+      let(:trigger_id) { '9x6284843y43' }
+      let(:channel_id) { 'XCF84843y43' }
+
+      before do
+        OpenTgifModal::SuccessfulStub.new.submit_modal(trigger_id, channel_id)
+      end
+
+      let(:response) do
+        post '/tgif-open-modal', {:trigger_id => trigger_id, :channel_id => channel_id}
+      end
+
+      it 'returns status 200' do
+        expect(response.status).to eq(200)
+      end
+
+      context '.post /tgif-submit-modal' do
+        let(:params) do
+          {"user" =>
+               {"id" => "1234"},
+           "view" =>
+               {"state" =>
+                    {"values" =>
+                         {"team_block" =>
+                              {"content" =>
+                                   {"type" => "plain_text_input", "value" => "team one"}},
+                          "message_block" =>
+                              {"content" =>
+                                   {"type" => "plain_text_input", "value" => "message one"}}
+                         }
+                    }
+               }
+          }
+        end
+
+        let(:response) do
+          post '/tgif-submit-modal', {payload: params.to_json}
+          post '/weekly-tgifs'
+        end
+
+        it 'returns status 200' do
+          expect(response.status).to eq(200)
+        end
+
+        it 'returns submitted team name' do
+          expect(response.body).to include('team one')
+        end
+
+        it 'returns submitted message' do
+          expect(response.body).to include('message one')
+        end
+      end
+    end
+
+    context 'when the api call to open slack modal is unsuccessful' do
+      let(:trigger_id) { '84843y43' }
+      let(:channel_id) { 'DXF43y43' }
+      before do
+        OpenTgifModal::UnsuccessfulStub.new.submit_modal(trigger_id, channel_id)
+      end
+
+      let(:response) do
+        post '/tgif-open-modal', {:trigger_id => trigger_id, :channel_id => channel_id}
+      end
+
+      it 'cannot open the open the tgif modal' do
+        expect(response.body).to include('TGIF modal cannot be opened')
+      end
+    end
+  end
 end 
