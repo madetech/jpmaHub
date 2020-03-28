@@ -84,7 +84,7 @@ class TgifService < Sinatra::Base
     if usecase_response == :tgif_deleted
       delete_message = "*TGIF deleted for #{team_name}*"
     elsif usecase_response == :unauthorised_user
-      delete_message = '*You are not authorised to delete tgifs*'
+      delete_message = '*You are not authorised to delete this tgif*'
     end
     delete_message
   end

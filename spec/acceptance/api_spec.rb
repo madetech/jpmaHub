@@ -116,7 +116,7 @@ describe 'Acceptance::TgifService' do
       end
 
       it 'doesnt delete tgif' do
-        expect(response.body).to include('You are not authorised to delete tgifs')
+        expect(response.body).to include('You are not authorised to delete this tgif')
       end
     end
 
