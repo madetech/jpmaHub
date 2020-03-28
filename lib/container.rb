@@ -10,7 +10,9 @@ class Container
         fetch_weekly_tgif: fetch_weekly_tgif,
         delete_all_tgif: delete_all_tgif,
         delete_team_tgif: delete_team_tgif,
-        submit_tgif: submit_tgif
+        submit_tgif: submit_tgif,
+        open_tgif_modal: RemoteUseCase::OpenTgifModal.new,
+        send_message_slack: RemoteUseCase::SendMessageSlack.new
     }
   end
 
