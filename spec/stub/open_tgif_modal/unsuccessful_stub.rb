@@ -96,6 +96,6 @@ module OpenTgifModal
                   'Authorization' => 'Bearer',
               }).
           to_return(status: 200, body: {"ok": false}.to_json, headers: {})
-  end
+    end
   end
 end

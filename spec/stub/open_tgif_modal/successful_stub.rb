@@ -96,6 +96,6 @@ module OpenTgifModal
                   'Content-Type' => 'application/json; charset=utf-8',
               }).
           to_return(status: 200, body: {"ok": true}.to_json, headers: {})
-      end
     end
+  end
 end

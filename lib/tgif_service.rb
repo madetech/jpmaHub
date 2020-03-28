@@ -13,7 +13,7 @@ class TgifService < Sinatra::Base
 
     @tgifs = @container.get_object(:fetch_weekly_tgif).execute
 
-    modal_block = [{ "type": "divider"},]
+    modal_block = [{"type": "divider"},]
 
     if @tgifs.nil?
       modal_block << empty_modal_block
@@ -31,7 +31,7 @@ class TgifService < Sinatra::Base
     end
   end
 
-  post '/tgif-submit-modal' do
+  post '/tgif-submit-request' do
     response = JSON.parse(params['payload'])
 
     slack_user_id = response['user']['id']
@@ -140,7 +140,7 @@ end
 
 def tgif_modal_modal(modal_block)
   @tgifs.each do |tgif|
-    modal_block <<  {
+    modal_block << {
         "type": "section",
         "text": {
             "type": "mrkdwn",

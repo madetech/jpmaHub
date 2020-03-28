@@ -1,7 +1,7 @@
 describe RemoteUseCase::SendMessageSlack do
   context 'when the api call to post message to slack is successful' do
     let(:team_name) { 'team one' }
-    let(:channel_id) {'XY64574'}
+    let(:channel_id) { 'XY64574' }
     let(:remote_use_case) { described_class.new }
 
     before do
@@ -18,7 +18,7 @@ describe RemoteUseCase::SendMessageSlack do
 
   context 'when the api call to post message to slack is unsuccessful' do
     let(:team_name) { 'team two' }
-    let(:channel_id) {'XY64574'}
+    let(:channel_id) { 'XY64574' }
 
     before do
       SendMessageSlack::UnsuccessfulStub.new.submit_response(team_name, channel_id)

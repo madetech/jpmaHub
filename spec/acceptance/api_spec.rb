@@ -203,16 +203,16 @@ describe 'Acceptance::TgifService' do
   end
 
   describe '.post /open-list-tgif' do
-    context 'when the api call to open list modal is successful with tgif exists'  do
+    context 'when the api call to open list modal is successful with tgif exists' do
       let(:trigger_id) { '9x6284843y43' }
       let(:list_tgif) do
-        [{ "type": "divider"},{
-          "type": "section",
-          "text": {
-              "type": "mrkdwn",
-              "text": "*Team weekly*\n message one}"
-          }
-      }]
+        [{"type": "divider"}, {
+            "type": "section",
+            "text": {
+                "type": "mrkdwn",
+                "text": "*Team weekly*\n message one}"
+            }
+        }]
       end
 
       before do
@@ -234,10 +234,10 @@ describe 'Acceptance::TgifService' do
       end
     end
 
-    context 'when the api call to open list modal is successful with no tgif exists'  do
+    context 'when the api call to open list modal is successful with no tgif exists' do
       let(:trigger_id) { '9x6284843y43' }
       let(:list_tgif) do
-        [{ "type": "divider"},]
+        [{"type": "divider"},]
       end
 
       before do
@@ -261,7 +261,7 @@ describe 'Acceptance::TgifService' do
     context 'when the api call to open list modal is unsuccessful' do
       let(:trigger_id) { '84843y43' }
       let(:list_tgif) do
-        [{ "type": "divider"},{
+        [{"type": "divider"}, {
             "type": "section",
             "text": {
                 "type": "mrkdwn",
@@ -300,7 +300,7 @@ describe 'Acceptance::TgifService' do
         expect(response.status).to eq(200)
       end
 
-      context '.post /tgif-submit-modal' do
+      context '.post /tgif-submit-request' do
         let(:params) do
           {"user" =>
                {"id" => "1234"},
@@ -320,7 +320,7 @@ describe 'Acceptance::TgifService' do
         end
 
         let(:response) do
-          post '/tgif-submit-modal', {payload: params.to_json}
+          post '/tgif-submit-request', {payload: params.to_json}
           post '/weekly-tgifs'
         end
 
