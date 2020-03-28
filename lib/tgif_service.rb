@@ -74,15 +74,15 @@ class TgifService < Sinatra::Base
   end
 
   post '/delete-tgif' do
-    response_text = params['text']
+    team_name = params['text']
     response_user_id = params['user_id']
 
     delete_team_tgif = @container.get_object(:delete_team_tgif)
-    usecase_response = delete_team_tgif.execute(response_text, response_user_id)
+    usecase_response = delete_team_tgif.execute(team_name, response_user_id)
 
     delete_message = '*No TGIF to delete*'
     if usecase_response == :tgif_deleted
-      delete_message = '*TGIF deleted*'
+      delete_message = "*TGIF deleted for #{team_name}*"
     elsif usecase_response == :unauthorised_user
       delete_message = '*You are not authorised to delete tgifs*'
     end

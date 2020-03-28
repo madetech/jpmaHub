@@ -91,8 +91,8 @@ describe 'Acceptance::TgifService' do
 
       context 'given tgif does not exist already' do
         let(:response) do
-          post '/submit-tgif', {:text => 'team | message one', :user_id => '1234'}
-          post '/delete-tgif', {:text => 'Team', :user_id => '1234'}
+          post '/submit-tgif', {:text => 'team one | message one', :user_id => '1234'}
+          post '/delete-tgif', {:text => 'Team one', :user_id => '1234'}
         end
 
         it 'returns status 200' do
@@ -100,7 +100,7 @@ describe 'Acceptance::TgifService' do
         end
 
         it 'returns tgif deleted' do
-          expect(response.body).to include('TGIF deleted')
+          expect(response.body).to include('TGIF deleted for Team one')
         end
       end
     end
