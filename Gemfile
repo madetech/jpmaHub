@@ -8,6 +8,7 @@ gem 'pg'
 gem 'rerun'
 gem 'rdiscount'
 gem 'rake'
+gem "rack", ">= 2.1.4"
 gem 'sinatra-activerecord'
 gem 'sinatra'
 gem 'zeitwerk', '~> 2.2.2'
