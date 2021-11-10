@@ -12,6 +12,7 @@ gem 'sinatra-activerecord'
 gem 'sinatra'
 gem 'zeitwerk', '~> 2.2.2'
 gem 'rest-client', '~> 2.0', '>= 2.0.2'
+gem "addressable", ">= 2.8.0"
 
 group :test do
   gem 'database_cleaner'
