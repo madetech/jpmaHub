@@ -1,20 +1,20 @@
 # frozen_string_literal: true
 
-source "https://rubygems.org"
+source 'https://rubygems.org'
 
 git_source(:github) { |repo_name| "https://github.com/#{repo_name}" }
 
+gem 'activerecord', '>= 6.0.3.5'
+gem 'addressable', '>= 2.8.0'
 gem 'pg'
-gem 'rerun'
-gem 'rdiscount'
+gem 'rack', '>= 2.1.4'
 gem 'rake'
-gem "rack", ">= 2.1.4"
-gem 'sinatra-activerecord'
-gem 'sinatra'
-gem 'zeitwerk', '~> 2.2.2'
+gem 'rdiscount'
+gem 'rerun'
 gem 'rest-client', '~> 2.0', '>= 2.0.2'
-gem "addressable", ">= 2.8.0"
-gem "activerecord", ">= 6.0.3.5"
+gem 'sinatra'
+gem 'sinatra-activerecord'
+gem 'zeitwerk', '~> 2.2.2'
 
 group :test do
   gem 'database_cleaner'
