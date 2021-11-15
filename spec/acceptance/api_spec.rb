@@ -1,5 +1,5 @@
 describe 'Acceptance::TgifService' do
-  describe '.post /delete-all' do
+  xdescribe '.post /delete-all' do
     context 'when authorised user deletes all tgifs' do
       context 'which doesnt exist' do
         let(:response) { post '/delete-all', :user_id => ENV['AUTH_DELETE_ALL'] }
