@@ -1,6 +1,6 @@
 module UseCase
   class FetchWeeklyTgif
-    def initialize(tgif_gateway: tgif_gateway)
+    def initialize(tgif_gateway:)
       @tgif_gateway = tgif_gateway
     end
 

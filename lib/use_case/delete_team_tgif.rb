@@ -1,6 +1,6 @@
 module UseCase
   class DeleteTeamTgif
-    def initialize(tgif_gateway: tgif_gateway)
+    def initialize(tgif_gateway:)
       @tgif_gateway = tgif_gateway
     end
 
