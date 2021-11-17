@@ -1,5 +1,8 @@
+require 'net/http'
+
 namespace :scheduler do
   task :start do
-    `bundle exec rackup -p 5000` if Time.now.wednesday?
+    uri = URI.parse(ENV["APP_URL"])
+    Net::HTTP.get(uri) if Time.now.wednesday?
   end
 end
